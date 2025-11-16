@@ -38,7 +38,7 @@ const RegisterForm = () => {
             control={form.control}
             name="name"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-2">
                 <FormLabel>Name</FormLabel>
                 <FormControl>
                   <Input {...field} value={field.value || ""} />
@@ -51,7 +51,7 @@ const RegisterForm = () => {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-2">
                 <FormLabel>Email</FormLabel>
                 <FormControl>
                   <Input type="email" {...field} value={field.value || ""} />
@@ -64,7 +64,7 @@ const RegisterForm = () => {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-2">
                 <FormLabel>Password</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} value={field.value || ""} />
@@ -77,7 +77,7 @@ const RegisterForm = () => {
             control={form.control}
             name="passwordConfirm"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-2">
                 <FormLabel>Confirm Password</FormLabel>
                 <FormControl>
                   <Input type="password" {...field} value={field.value || ""} />
