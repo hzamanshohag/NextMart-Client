@@ -11,14 +11,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
+import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { registerValidation } from "./registerValidation";
+import { registerUser } from "@/services/AuthService";
+import { toast } from "sonner";
+import { ca } from "zod/locales";
 
 const RegisterForm = () => {
-  const form = useForm();
+  const form = useForm({
+    resolver: zodResolver(registerValidation),
+  });
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const {
+    formState: { isSubmitting },
+  } = form;
+
+  const password = form.watch("password");
+  const passwordConfirm = form.watch("passwordConfirm");
+
+  const onSubmit: SubmitHandler<FieldValues> = async (data) => {
+    try {
+      const res = await registerUser(data);
+      if (res.success) {
+        toast.success(res.message || "Registration successful!");
+        form.reset();
+      } else {
+        toast.error(res.message || "Registration failed. Please try again.");
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Something went wrong. Please try again.");
+      console.error(err);
+    }
   };
 
   return (
@@ -82,12 +107,20 @@ const RegisterForm = () => {
                 <FormControl>
                   <Input type="password" {...field} value={field.value || ""} />
                 </FormControl>
-                <FormMessage />
+                {passwordConfirm && password !== passwordConfirm ? (
+                  <FormMessage>Passwords don't match</FormMessage>
+                ) : (
+                  <FormMessage />
+                )}
               </FormItem>
             )}
           />
-          <Button type="submit" className="mt-5 w-full">
-            Register
+          <Button
+            disabled={!!passwordConfirm && password !== passwordConfirm}
+            type="submit"
+            className="mt-5 w-full"
+          >
+            {isSubmitting ? "Registering..." : "Register"}
           </Button>
         </form>
       </Form>
