@@ -17,7 +17,6 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { registerValidation } from "./registerValidation";
 import { registerUser } from "@/services/AuthService";
 import { toast } from "sonner";
-import { ca } from "zod/locales";
 
 const RegisterForm = () => {
   const form = useForm({
@@ -39,10 +38,10 @@ const RegisterForm = () => {
         form.reset();
       } else {
         toast.error(res.message || "Registration failed. Please try again.");
+        form.reset();
       }
     } catch (err: any) {
       toast.error(err.message || "Something went wrong. Please try again.");
-      console.error(err);
     }
   };
 
@@ -126,7 +125,7 @@ const RegisterForm = () => {
       </Form>
       <p className="text-sm text-gray-600 text-center my-3">
         Already have an account ?
-        <Link href="/login" className="text-primary">
+        <Link href="/login" className="text-primary mx-1">
           Login
         </Link>
       </p>
