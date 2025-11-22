@@ -1,5 +1,6 @@
 "use client";
 
+import ReCAPTCHA from "react-google-recaptcha";
 import Logo from "@/app/assets/svgs/Logo";
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +25,13 @@ const LoginForm = () => {
   const form = useForm({
     resolver: zodResolver(loginValidation),
   });
-  const { formState :{isSubmitting}} = form;
+  const {
+    formState: { isSubmitting },
+  } = form;
+
+  const handleReCaptcha = (value: string | null) => {
+    console.log("ReCAPTCHA value:", value);
+  };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
     try {
@@ -79,6 +86,13 @@ const LoginForm = () => {
               </FormItem>
             )}
           />
+          <div className="flex items-center mt-3.5 w-full mx-auto">
+            <ReCAPTCHA
+              sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_CLIENT_SITE_KEY || ""}
+              onChange={handleReCaptcha}
+              className="mx-auto"
+            />
+          </div>
 
           <Button type="submit" className="mt-5 w-full" disabled={isSubmitting}>
             {isSubmitting ? "Logging in..." : "Login"}
