@@ -107,7 +107,7 @@ const LoginForm = () => {
             />
           </div>
 
-          <Button type="submit" className="mt-5 w-full" disabled={isSubmitting || !reCaptchaStatus}>
+          <Button type="submit" className="mt-5 w-full" disabled={reCaptchaStatus ? false : true}>
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
