@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -18,19 +17,33 @@ import Link from "next/link";
 import React from "react";
 import { Field, FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { loginValidation } from "./loginValidation";
-import { loginUser } from "@/services/AuthService";
+import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
 import { toast } from "sonner";
 
 const LoginForm = () => {
   const form = useForm({
     resolver: zodResolver(loginValidation),
   });
+
+  const [reCaptchaStatus, setReCaptchaStatus] = React.useState<boolean>(false);
+
   const {
     formState: { isSubmitting },
   } = form;
 
-  const handleReCaptcha = (value: string | null) => {
-    console.log("ReCAPTCHA value:", value);
+  const handleReCaptcha = async (value: string | null) => {
+    try {
+      const res = await reCaptchaTokenVerification(value!);
+
+      if (res.success) {
+        toast.success("ReCAPTCHA verification successful!");
+        setReCaptchaStatus(true);
+      }
+    } catch (err: any) {
+      toast.error(
+        err.message || "ReCAPTCHA verification failed. Please try again."
+      );
+    }
   };
 
   const onSubmit: SubmitHandler<FieldValues> = async (data) => {
@@ -94,7 +107,7 @@ const LoginForm = () => {
             />
           </div>
 
-          <Button type="submit" className="mt-5 w-full" disabled={isSubmitting}>
+          <Button type="submit" className="mt-5 w-full" disabled={isSubmitting || !reCaptchaStatus}>
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
