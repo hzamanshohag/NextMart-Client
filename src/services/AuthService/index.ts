@@ -81,3 +81,8 @@ export const reCaptchaTokenVerification = async (token: string) => {
     );
   }
 };
+
+export const logout =async ()=>{
+  const storeCookies = await cookies();
+  storeCookies.delete("accessToken");
+}
