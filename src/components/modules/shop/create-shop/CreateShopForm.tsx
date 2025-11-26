@@ -7,7 +7,6 @@ import NMImageUploader from "@/components/ui/core/NMImageUploader/Index";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -15,19 +14,45 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { createShop } from "@/services/Shop";
 import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
+import { toast } from "sonner";
 
 const CreateShopForm = () => {
   const [imageFiles, setImageFiles] = useState<File[] | []>([]);
   const [imagePreview, setImagePreview] = useState<string[] | []>([]);
   const form = useForm();
+  const {
+    formState: { isSubmitting },
+  } = form;
 
-  const onSubmit: SubmitHandler<FieldValues> = (data: any) => {
+  const onSubmit: SubmitHandler<FieldValues> = async (data: any) => {
+    const servicesOfferedArray = data.servicesOffered
+      ? data.servicesOffered.split(",").map((service: string) => service.trim())
+      : [];
+    const modifiedData = {
+      ...data,
+      servicesOffered: servicesOfferedArray,
+      establishedYear: Number(data.establishedYear),
+    };
+
     try {
-      console.log(data);
+      // Replace with actual API call
+      const formData = new FormData();
+      formData.append("data", JSON.stringify(modifiedData));
+      formData.append("logo", imageFiles[0] as File);
+
+      const res = await createShop(formData);
+      console.log(res);
+
+      if (res.success) {
+        toast.success("Shop created successfully!");
+      } else {
+        toast.error(`Failed to create shop: ${res.message || "Unknown error"}`);
+      }
     } catch (err: any) {
-      console.error(err);
+      toast.error(`Failed to create shop: ${err.message}`);
     }
   };
 
@@ -219,7 +244,7 @@ const CreateShopForm = () => {
             )}
           </div>
           <Button type="submit" className="mt-5 w-full">
-            Create
+            {isSubmitting ? "Creating Shop..." : "Create Shop"}
           </Button>
         </form>
       </Form>
