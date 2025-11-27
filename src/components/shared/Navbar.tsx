@@ -33,10 +33,12 @@ export default function Navbar() {
   return (
     <header className="border-b w-full">
       <div className="container flex justify-between items-center mx-auto h-16 px-3">
+        <Link href="/">
         <h1 className="text-2xl font-black flex items-center">
           <Logo />
           Next Mart
         </h1>
+        </Link>
         <div className="max-w-md  flex-grow">
           <input
             type="text"
@@ -55,7 +57,10 @@ export default function Navbar() {
           {user ? (
             <>
               <Link href="/create-shop">
-                <Button className="rounded-full" variant="outline">
+                <Button
+                  className="rounded-full bg-primary text-white hover:bg-primary/90"
+                  variant="outline"
+                >
                   Create Shop
                 </Button>
               </Link>
