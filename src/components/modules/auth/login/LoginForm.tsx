@@ -19,6 +19,7 @@ import { FieldValues, SubmitHandler, useForm } from "react-hook-form";
 import { loginValidation } from "./loginValidation";
 import { loginUser, reCaptchaTokenVerification } from "@/services/AuthService";
 import { toast } from "sonner";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const LoginForm = () => {
   const form = useForm({
@@ -26,6 +27,10 @@ const LoginForm = () => {
   });
 
   const [reCaptchaStatus, setReCaptchaStatus] = React.useState<boolean>(false);
+
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const router = useRouter();
 
   const {
     formState: { isSubmitting },
@@ -52,6 +57,11 @@ const LoginForm = () => {
       if (res.success) {
         toast.success(res.message || "User login successful!");
         form.reset();
+        if (redirect) {
+          router.push(redirect);
+        }else{
+          router.push("/profile");
+        }
       } else {
         toast.error(res.message || "Login failed. Please try again.");
       }
@@ -107,7 +117,11 @@ const LoginForm = () => {
             />
           </div>
 
-          <Button type="submit" className="mt-5 w-full" disabled={reCaptchaStatus ? false : true}>
+          <Button
+            type="submit"
+            className="mt-5 w-full"
+            disabled={reCaptchaStatus ? false : true}
+          >
             {isSubmitting ? "Logging in..." : "Login"}
           </Button>
         </form>
